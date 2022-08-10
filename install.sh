@@ -18,10 +18,6 @@ TMPFILE=$(mktemp)
 sudo wget "https://github.com/codeskyblue/gohttpserver/releases/download/${GOHTTPLATEST}/gohttpserver_${GOHTTPLATEST}_linux_amd64.tar.gz" -O "${TMPFILE}"
 tar -xf  "${TMPFILE}"
 
-# Copy Rustdesk install scripts to folder
-mv /opt/rustdesk/WindowsAgentAIOInstall.ps1 /opt/gohttp/public/
-mv /opt/rustdesk/linuxclientinstall.sh /opt/gohttp/public/
-
 # Make gohttp log folders
 if [ ! -d "/var/log/gohttp" ]; then
     echo "Creating /var/log/gohttp"
