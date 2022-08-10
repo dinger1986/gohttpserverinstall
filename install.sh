@@ -5,18 +5,31 @@ uname=$(whoami)
 admintoken=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c16)
 
 # Download and install gohttpserver
-mkdir /opt/gohttp
-mkdir /opt/gohttp/public
+# Make Folder /opt/gohttp/
+if [ ! -d "/opt/gohttp" ]; then
+    echo "Creating /opt/gohttp"
+    sudo mkdir -p /opt/gohttp/
+	sudo mkdir -p /opt/gohttp/public
+fi
 sudo chown "${uname}" -R /opt/gohttp
 cd /opt/gohttp
 GOHTTPLATEST=$(curl https://api.github.com/repos/codeskyblue/gohttpserver/releases/latest -s | grep "tag_name"| awk '{print substr($2, 2, length($2)-3) }')
-wget https://github.com/codeskyblue/gohttpserver/releases/download/${GOHTTPLATEST}/gohttpserver_${GOHTTPLATEST}_linux_amd64.tar.gz
-tar -xf gohttpserver_${GOHTTPLATEST}_linux_amd64.tar.gz
-rm -rf gohttpserver_${GOHTTPLATEST}_linux_amd64.tar.gz
+TMPFILE=$(mktemp)
+sudo wget "https://github.com/codeskyblue/gohttpserver/releases/download/${GOHTTPLATEST}/gohttpserver_${GOHTTPLATEST}_linux_amd64.tar.gz" -O "${TMPFILE}"
+tar -xf  "${TMPFILE}"
+
+# Copy Rustdesk install scripts to folder
+mv /opt/rustdesk/WindowsAgentAIOInstall.ps1 /opt/gohttp/public/
+mv /opt/rustdesk/linuxclientinstall.sh /opt/gohttp/public/
 
 # Make gohttp log folders
-mkdir /var/log/gohttp/
+if [ ! -d "/var/log/gohttp" ]; then
+    echo "Creating /var/log/gohttp"
+    sudo mkdir -p /var/log/gohttp/
+fi
 sudo chown "${uname}" -R /var/log/gohttp/
+
+sudo rm "${TMPFILE}"
 
 # Setup Systemd to launch Go HTTP Server
 gohttpserver="$(cat << EOF
@@ -43,6 +56,8 @@ sudo systemctl daemon-reload
 sudo systemctl enable gohttpserver.service
 sudo systemctl start gohttpserver.service
 
+#Get WAN IP
+wanip=$(dig @resolver4.opendns.com myip.opendns.com +short)
 
 echo -e "You can access your gohttpserver by going to http://${wanip}:8000"
 echo -e "Username is admin and password is ${admintoken}"
