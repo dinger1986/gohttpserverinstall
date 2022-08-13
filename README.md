@@ -3,6 +3,8 @@ Easy install Script for gohttpserver on linux, should work on any debian or cent
 
 Creates a directory under /opt/gohttp/public for files to sit in
 
+You can use Hetzner to test this with a $20 credit using this referal code https://hetzner.cloud/?ref=p6iUr7jEXmoB
+
 # How to Install the server
 Please setup your firewall on your server prior to running the script.
 
