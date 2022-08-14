@@ -34,7 +34,7 @@ Description=Go HTTP Server
 [Service]
 Type=simple
 LimitNOFILE=1000000
-ExecStart=/opt/gohttp/gohttpserver -r ./public --port 8000 --auth-type http --auth-http admin:${admintoken}
+ExecStart=/opt/gohttp/gohttpserver --upload -r ./public --port 8000 --auth-type http --auth-http admin:${admintoken}
 WorkingDirectory=/opt/gohttp/
 User=${uname}
 Group=${uname}
